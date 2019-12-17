@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@shared/config/config.service';
 
@@ -8,7 +8,8 @@ export class DatabaseFactory implements TypeOrmOptionsFactory {
   private static readonly MinPortNumber = 1;
   private static readonly DefaultPort = 5432;
 
-  constructor(@Inject(ConfigService) private configService: ConfigService) { }
+  constructor(private configService: ConfigService) {
+  }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
@@ -18,7 +19,7 @@ export class DatabaseFactory implements TypeOrmOptionsFactory {
       username: this.configService.get('TYPEORM_USERNAME'),
       password: this.configService.get('TYPEORM_PASSWORD'),
       database: this.configService.get('TYPEORM_DATABASE'),
-      synchronize: true,
+      synchronize: false,
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     };
   }
