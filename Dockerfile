@@ -1,5 +1,7 @@
 FROM node:12.13.1-alpine3.10
 
+RUN apk add yarn
+
 RUN mkdir -p /app/src
 WORKDIR /app
 
@@ -9,9 +11,9 @@ RUN apk add \
         g++
 
 ADD package.json /app/package.json
-ADD package-lock.json /app/package-lock.json
-RUN npm ci
+ADD yarn.lock /app/yarn.lock
+RUN yarn install --frozen-lockfile
 
 ADD . /app
 
-CMD ["npm", "run", "start:dev"]
+CMD ["yarn", "run", "start:dev"]

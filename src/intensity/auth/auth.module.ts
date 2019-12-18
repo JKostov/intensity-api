@@ -3,9 +3,14 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '@intensity/users/users.module';
 import { SharedModule } from '@shared/shared.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [SharedModule, UsersModule],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    SharedModule,
+    UsersModule,
+  ],
   providers: [AuthService],
   controllers: [AuthController],
 })
