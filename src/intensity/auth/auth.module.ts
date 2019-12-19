@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '@intensity/users/users.module';
 import { SharedModule } from '@shared/shared.module';
 import { PassportModule } from '@nestjs/passport';
+import { JwtPassportStrategy } from '@intensity/auth/jwt-passport.strategy';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { PassportModule } from '@nestjs/passport';
     SharedModule,
     UsersModule,
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtPassportStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

@@ -6,7 +6,6 @@ import { LoggedGuard } from '@shared/guards/logged.guard';
 export class UsersController {
   constructor(private readonly userService: UsersService) { }
 
-  @UseGuards(LoggedGuard)
   @Get('')
   public async getAll(@Res() res) {
     const users = await this.userService.getAll();
