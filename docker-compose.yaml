@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+  intensity-api:
+    build:
+      context: ./intensity-api
+      args:
+        - NODE_ENV=development
+    image: intensity-api
+    container_name: intensity-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./intensity-api:/app
+      - intensity-api_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - intensity-postgres
+
+  intensity-postgres:
+    image: postgres:12.1-alpine
+    container_name: intensity-postgres
+    ports:
+    - "5000:5432"
+    environment:
+    - POSTGRES_USER=root
+    - POSTGRES_PASSWORD=root
+    - POSTGRES_DB=intensity
+
+volumes:
+  intensity-api_node_modules: {}
