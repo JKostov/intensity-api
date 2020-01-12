@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { AbstractService } from '@intensity/types/abstract.service';
 import { UserRole } from '@intensity/users/user-role.enum';
 import { UpdateStatusDto } from '@intensity/users/dto/update-status.dto';
+import { Token } from '@shared/token/token.interface';
 
 @Injectable()
 export class UsersService extends AbstractService<User> {
@@ -90,4 +91,31 @@ export class UsersService extends AbstractService<User> {
     return user;
   }
 
+  async signForTraining(userToken: Token): Promise<User> {
+    const user = await this.getByIdComplete(userToken.id);
+
+    if (user.trainingNum === 0) {
+      return null;
+    }
+
+    user.trainingNum -= 1;
+    return await this.repository.save(user);
+  }
+
+  async signOutFromTraining(userToken: Token): Promise<User> {
+    const user = await this.getByIdComplete(userToken.id);
+
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    user.trainingNum += 1;
+    return await this.repository.save(user);
+  }
+
+  async getTrainingIds(id: number): Promise<number[]> {
+    const userWithTrainings = await this.repository.findOne(id, { relations: ['trainings'] });
+
+    return userWithTrainings.trainings.map(t => t.id);
+  }
 }
