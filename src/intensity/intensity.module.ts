@@ -5,6 +5,7 @@ import { WodsModule } from './wods/wods.module';
 import { TrainingsModule } from './trainings/trainings.module';
 import { ExercisesModule } from './exercises/exercises.module';
 import { AuthModule } from './auth/auth.module';
+import { IntensityGuardsModule } from '@intensity/guards/intensity-guards.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
     TrainingsModule,
     ExercisesModule,
     AuthModule,
+    IntensityGuardsModule,
   ],
 })
 export class IntensityModule {}

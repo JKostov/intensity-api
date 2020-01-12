@@ -19,14 +19,6 @@ export class TokenService {
     return this.jwtService.signAsync(payload, options);
   }
 
-  verify<T extends object = any>(token: string, options?: jwt.VerifyOptions): T {
-    return this.jwtService.verify<T>(token, options);
-  }
-
-  verifyAsync<T extends object = any>(token: string, options?: jwt.VerifyOptions): Promise<T> {
-    return this.jwtService.verifyAsync<T>(token, options);
-  }
-
   decode(token: string, options?: jwt.DecodeOptions): null | {
     [key: string]: any;
   } | string {

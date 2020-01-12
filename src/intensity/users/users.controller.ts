@@ -1,10 +1,17 @@
-import { Controller, Get, HttpStatus, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from '@intensity/users/users.service';
 import { LoggedGuard } from '@shared/guards/logged.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as path from 'path';
+import { MulterAvatarFactory } from '@shared/factories/multer-avatar.factory';
+import * as fs from 'fs';
+import { AdminOrTrainerGuard } from '@intensity/guards/admin-or-trainer.guard';
+import { UpdateStatusDto } from '@intensity/users/dto/update-status.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) { }
+  constructor(private readonly userService: UsersService) {
+  }
 
   @Get('')
   public async getAll(@Res() res) {
@@ -20,36 +27,46 @@ export class UsersController {
     return res.status(HttpStatus.OK).json(user);
   }
 
-  // @Post('')
-  // @UseGuards(LoggedGuard)
-  // @UseInterceptors(FilesInterceptor('images[]', 10))
-  // public async upload(@UploadedFiles() images, @Res() res) {
-  //   const imageUrls: string[] = [];
-  //
-  //   images.forEach(i => imageUrls.push(i.filename));
-  //
-  //   return res.status(HttpStatus.OK).json({ imageUrls });
-  // }
-  //
-  // @Get(':fileName')
-  // public async getImage(@Param() param, @Res() res) {
-  //   const file = path.join('uploads/images', param.fileName);
-  //
-  //   return res.status(HttpStatus.OK).download(file) ;
-  // }
-  //
-  // @Delete(':fileName')
-  // public deleteImage(@Param() param, @Res() res) {
-  //   const file = path.join('uploads/images', param.fileName);
-  //   let success = false;
-  //
-  //   try {
-  //     fs.unlinkSync(file);
-  //     success = true;
-  //   } catch (e) {
-  //     success = false;
-  //   }
-  //
-  //   return res.status(HttpStatus.OK).json({ success }) ;
-  // }
+  @Get(':userId/avatar')
+  public async getImage(@Param() param, @Res() res) {
+    let file = path.join(MulterAvatarFactory.AvatarPath, `${param.userId}.jpg`);
+
+    try {
+      await fs.promises.access(file);
+    } catch (e) {
+      file = path.join(MulterAvatarFactory.AvatarPath, `${param.userId}.png`);
+      try {
+        await fs.promises.access(file);
+      } catch (e) {
+        throw new HttpException('Avatar not found.', HttpStatus.NOT_FOUND);
+      }
+    }
+
+    return res.status(HttpStatus.OK).download(file);
+  }
+
+  @Post('/avatar')
+  @UseGuards(LoggedGuard)
+  @UseInterceptors(FileInterceptor('avatar'))
+  public async upload(@UploadedFile() avatar, @Res() res) {
+    return res.status(HttpStatus.OK).json({ avatar: avatar.filename });
+  }
+
+  @Put(':userId/status')
+  @UseGuards(LoggedGuard, AdminOrTrainerGuard)
+  public async updateUserStatus(@Param() param, @Body() updateStatusDto: UpdateStatusDto, @Res() res) {
+
+    await this.userService.updateStatus(param.userId, updateStatusDto);
+
+    return res.status(HttpStatus.OK).json({ message: 'Ok' });
+  }
+
+  @Put(':userId/payment')
+  @UseGuards(LoggedGuard, AdminOrTrainerGuard)
+  public async addPayment(@Param() param, @Res() res) {
+
+    await this.userService.addPayment(param.userId);
+
+    return res.status(HttpStatus.OK).json({ message: 'Ok' });
+  }
 }
