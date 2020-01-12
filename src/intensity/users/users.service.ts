@@ -75,4 +75,19 @@ export class UsersService extends AbstractService<User> {
 
     return await this.repository.save(user);
   }
+
+  async delete(id: number): Promise<User> {
+    const user = await this.getByIdComplete(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    delete user.password;
+
+    await this.repository.remove(user);
+
+    return user;
+  }
+
 }

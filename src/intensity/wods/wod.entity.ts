@@ -49,7 +49,7 @@ export class Wod {
   @OneToMany(type => Training, training => training.wod)
   trainings: Training[];
 
-  @OneToMany(type => Exercise, exercise => exercise.wod)
+  @OneToMany(type => Exercise, exercise => exercise.wod, { cascade: true })
   exercises: Exercise[];
 
   @CreateDateColumn({ type: 'timestamp' })

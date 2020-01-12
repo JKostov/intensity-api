@@ -8,6 +8,7 @@ import { Wod } from '@intensity/wods/wod.entity';
 })
 export class Exercise {
 
+  @Expose()
   @PrimaryGeneratedColumn('increment')
   id: number;
 

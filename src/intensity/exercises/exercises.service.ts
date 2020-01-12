@@ -9,4 +9,8 @@ export class ExercisesService extends AbstractService<Exercise> {
   constructor(@InjectRepository(Exercise) trainingsRepository: Repository<Exercise>) {
     super(trainingsRepository);
   }
+
+  async deleteExercises(exercises: Exercise[]): Promise<void> {
+    await this.repository.delete(exercises.map(e => e.id));
+  }
 }

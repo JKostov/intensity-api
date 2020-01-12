@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AdminOrTrainerGuard } from './admin-or-trainer.guard';
 import { UsersModule } from '../users/users.module';
+import { AdminGuard } from '@intensity/guards/admin.guard';
 
 @Module({
   imports: [
@@ -8,6 +9,7 @@ import { UsersModule } from '../users/users.module';
   ],
   providers: [
     AdminOrTrainerGuard,
+    AdminGuard,
   ],
   exports: [UsersModule],
 })

@@ -6,5 +6,6 @@ import { Exercise } from '@intensity/exercises/exercise.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Exercise])],
   providers: [ExercisesService],
+  exports: [ExercisesService],
 })
 export class ExercisesModule {}

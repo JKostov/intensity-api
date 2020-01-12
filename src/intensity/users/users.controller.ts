@@ -1,4 +1,18 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UsersService } from '@intensity/users/users.service';
 import { LoggedGuard } from '@shared/guards/logged.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -7,6 +21,7 @@ import { MulterAvatarFactory } from '@shared/factories/multer-avatar.factory';
 import * as fs from 'fs';
 import { AdminOrTrainerGuard } from '@intensity/guards/admin-or-trainer.guard';
 import { UpdateStatusDto } from '@intensity/users/dto/update-status.dto';
+import { AdminGuard } from '@intensity/guards/admin.guard';
 
 @Controller('users')
 export class UsersController {
@@ -68,5 +83,14 @@ export class UsersController {
     await this.userService.addPayment(param.userId);
 
     return res.status(HttpStatus.OK).json({ message: 'Ok' });
+  }
+
+  @Delete(':userId')
+  @UseGuards(LoggedGuard, AdminGuard)
+  public async deleteUser(@Param() param, @Res() res) {
+
+    const deletedUser = await this.userService.delete(param.userId);
+
+    return res.status(HttpStatus.OK).json(deletedUser);
   }
 }
