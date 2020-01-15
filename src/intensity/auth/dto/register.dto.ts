@@ -1,5 +1,6 @@
-import { IsEmail, IsString, Max, MaxLength, Min, MinLength, IsOptional } from 'class-validator';
+import { IsEmail, IsString, Max, MaxLength, Min, MinLength, IsOptional, IsEnum } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { UserRole } from '@intensity/users/user-role.enum';
 
 export class RegisterDto {
   @ApiProperty({
@@ -37,4 +38,12 @@ export class RegisterDto {
   @Min(16)
   @Max(24)
   readonly trainingNum: number;
+
+  @ApiPropertyOptional({
+    enum: UserRole,
+    default: UserRole.user,
+  })
+  @IsOptional()
+  @IsEnum(UserRole)
+  readonly role: UserRole;
 }

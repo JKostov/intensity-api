@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { LoginDto } from '@intensity/auth/dto/login.dto';
 import { UsersService } from '@intensity/users/users.service';
 import { TokenService } from '@shared/token/token.service';
@@ -7,6 +7,7 @@ import { LoginSuccess } from '@intensity/auth/dto/login-success.type';
 import { RegisterDto } from '@intensity/auth/dto/register.dto';
 import { User } from '@intensity/users/user.entity';
 import { plainToClass } from 'class-transformer';
+import { UserRole } from '@intensity/users/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -46,6 +47,10 @@ export class AuthService {
     const user = plainToClass(User, userData);
 
     user.password = await this.tokenService.generateHash(user.password);
+    user.role = UserRole.user;
+    if (userData.role) {
+      user.role = userData.role;
+    }
 
     return await this.usersService.create(user);
   }
