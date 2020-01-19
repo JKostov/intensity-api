@@ -53,4 +53,8 @@ export class TrainingsService extends AbstractService<Training> {
 
     return await this.usersService.getTrainingIds(user.id);
   }
+
+  async saveTrainings(trainings: Training[]): Promise<Training[]> {
+    return await this.repository.save((trainings));
+  }
 }
