@@ -26,6 +26,8 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiForbiddenResponse, ApiNotFoundR
 import { User } from '@intensity/users/user.entity';
 import { ApiImplicitParam } from '@nestjs/swagger/dist/decorators/api-implicit-param.decorator';
 import { UploadAvatarDto } from '@intensity/users/dto/upload-avatar.dto';
+import { UpdateUserDto } from '@intensity/users/dto/update-user.dto';
+import { UserToken } from '@intensity/auth/user-token.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -124,5 +126,17 @@ export class UsersController {
     const deletedUser = await this.userService.delete(param.userId);
 
     return res.status(HttpStatus.OK).json(deletedUser);
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Update user', type: User })
+  @ApiForbiddenResponse({ description: 'Not logged' })
+  @Put('')
+  @UseGuards(LoggedGuard)
+  public async updateUser(@Body() updateUserDto: UpdateUserDto, @UserToken() userToken, @Res() res) {
+
+    const updatedData = await this.userService.update(userToken.id, updateUserDto);
+
+    return res.status(HttpStatus.OK).json(updatedData);
   }
 }

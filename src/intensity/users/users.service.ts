@@ -6,6 +6,7 @@ import { AbstractService } from '@intensity/types/abstract.service';
 import { UserRole } from '@intensity/users/user-role.enum';
 import { UpdateStatusDto } from '@intensity/users/dto/update-status.dto';
 import { Token } from '@shared/token/token.interface';
+import { UpdateUserDto } from '@intensity/users/dto/update-user.dto';
 
 @Injectable()
 export class UsersService extends AbstractService<User> {
@@ -117,5 +118,20 @@ export class UsersService extends AbstractService<User> {
     const userWithTrainings = await this.repository.findOne(id, { relations: ['trainings'] });
 
     return userWithTrainings.trainings.map(t => t.id);
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.getByIdComplete(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    user.name = updateUserDto.name;
+    user.lastName = updateUserDto.lastName;
+    user.email = updateUserDto.email;
+    user.about = updateUserDto.about;
+
+    return await this.repository.save(user);
   }
 }
