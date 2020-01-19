@@ -12,5 +12,6 @@ import { UsersModule } from '@intensity/users/users.module';
   ],
   providers: [TrainingsService],
   controllers: [TrainingsController],
+  exports: [TrainingsService],
 })
 export class TrainingsModule {}
