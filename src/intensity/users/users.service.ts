@@ -19,7 +19,7 @@ export class UsersService extends AbstractService<User> {
 
   async getAll(): Promise<User[]> {
     return this.repository.createQueryBuilder('u')
-      .select(['u.id', 'u.name', 'u.lastName', 'u.email', 'u.about', 'u.trainingNum'])
+      .select(['u.id', 'u.name', 'u.lastName', 'u.email', 'u.about', 'u.trainingNum', 'u.role'])
       .getMany()
     ;
   }
