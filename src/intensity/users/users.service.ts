@@ -30,7 +30,7 @@ export class UsersService extends AbstractService<User> {
 
   async getById(id: number): Promise<User> {
     return this.repository.createQueryBuilder('u')
-      .select(['u.id', 'u.name', 'u.lastName', 'u.email', 'u.about', 'u.trainingNum'])
+      .select(['u.id', 'u.name', 'u.lastName', 'u.email', 'u.about', 'u.trainingNum', 'u.role'])
       .where('u.id = :id', { id })
       .getOne()
     ;

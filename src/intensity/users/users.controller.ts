@@ -67,7 +67,7 @@ export class UsersController {
         try {
           await fs.promises.access(file);
         } catch (e) {
-          throw new HttpException('Avatar not found.', HttpStatus.NOT_FOUND);
+          file = path.join(MulterAvatarFactory.AvatarPath, `default.png`);
         }
       }
     }
