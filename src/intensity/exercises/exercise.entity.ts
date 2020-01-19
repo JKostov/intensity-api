@@ -36,6 +36,14 @@ export class Exercise {
   @Column()
   duration: number;
 
+  @ApiResponseProperty()
+  @Expose()
+  @Column({
+    length: 500,
+    nullable: true,
+  })
+  link: string;
+
   @ApiResponseProperty({ type: () => Wod })
   @Expose()
   @ManyToOne(type => Wod, wod => wod.exercises)

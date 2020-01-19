@@ -27,4 +27,11 @@ export class CreateExerciseDto {
   @IsOptional()
   @IsNumber()
   readonly duration: number;
+
+  @ApiPropertyOptional({
+    default: 0,
+  })
+  @IsOptional()
+  @IsString()
+  readonly link: string;
 }
