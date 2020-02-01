@@ -23,11 +23,11 @@ export class TrainingsService extends AbstractService<Training> {
       .leftJoin('t.users', 'u')
       .getOne();
 
-    training.users = training.users.map(u => ({ ...u, name: `${u.name} ${u.lastName}` }));
-
     if (!training) {
       throw new NotFoundException('Training does not exist.');
     }
+    
+    training.users = training.users.map(u => ({ ...u, name: `${u.name} ${u.lastName}` }));
 
     return training;
   }
