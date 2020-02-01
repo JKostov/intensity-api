@@ -89,7 +89,7 @@ export class WodsService extends AbstractService<Wod> {
   }
 
   async delete(id: number): Promise<Wod> {
-    const wod = await this.repository.findOne(id, { relations: ['exercises'] });
+    const wod = await this.repository.findOne(id, { relations: ['exercises', 'trainings'] });
 
     if (!wod) {
       throw new NotFoundException('Wod not found.');
@@ -97,6 +97,9 @@ export class WodsService extends AbstractService<Wod> {
 
     if (wod.exercises.length > 0) {
       await this.exercisesService.deleteExercises(wod.exercises);
+    }
+    if (wod.trainings.length > 0) {
+      await this.trainingsService.deleteTrainings(wod.trainings);
     }
     await this.repository.delete(wod.id);
 

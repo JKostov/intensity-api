@@ -6,8 +6,6 @@ import { AbstractService } from '@intensity/types/abstract.service';
 import { Token } from '@shared/token/token.interface';
 import { SignInOutDto } from '@intensity/trainings/dto/sign-in-out.dto';
 import { UsersService } from '@intensity/users/users.service';
-import { Wod } from '@intensity/wods/wod.entity';
-import { Exercise } from '@intensity/exercises/exercise.entity';
 
 @Injectable()
 export class TrainingsService extends AbstractService<Training> {
@@ -24,6 +22,8 @@ export class TrainingsService extends AbstractService<Training> {
       .leftJoinAndSelect('w.exercises', 'e', 'e.wod = w.id')
       .leftJoin('t.users', 'u')
       .getOne();
+
+    training.users = training.users.map(u => ({ ...u, name: `${u.name} ${u.lastName}` }));
 
     if (!training) {
       throw new NotFoundException('Training does not exist.');
@@ -64,5 +64,9 @@ export class TrainingsService extends AbstractService<Training> {
 
   async saveTrainings(trainings: Training[]): Promise<Training[]> {
     return await this.repository.save((trainings));
+  }
+
+  async deleteTrainings(trainings: Training[]): Promise<void> {
+    await this.repository.delete(trainings.map(t => t.id));
   }
 }
