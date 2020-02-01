@@ -79,7 +79,9 @@ export class WodsService extends AbstractService<Wod> {
 
     const exercisesToDelete = wod.exercises.filter(e => !updateWod.exercises.find(ue => ue.id === e.id));
 
-    await this.exercisesService.deleteExercises(exercisesToDelete);
+    if (exercisesToDelete.length > 0) {
+      await this.exercisesService.deleteExercises(exercisesToDelete);
+    }
     this.updateWodProperties(wod, updateWod);
     this.checkAndSetWodProperties(wod);
 
