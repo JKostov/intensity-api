@@ -27,7 +27,7 @@ export class WodsService extends AbstractService<Wod> {
     this.checkAndSetWodProperties(wod);
 
     const trainings: Training[] = [];
-    if (wod.globalType === WodGlobalType.crossfit) {
+    if (wod.globalType === WodGlobalType.lightfit) {
       const training4 = new Training();
       training4.date = new Date(wod.date);
       training4.date.setHours(16);
