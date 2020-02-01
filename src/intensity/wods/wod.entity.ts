@@ -56,7 +56,7 @@ export class Wod {
   globalType: WodGlobalType;
 
   @ApiResponseProperty({ type: [Training] })
-  @OneToMany(type => Training, training => training.wod)
+  @OneToMany(type => Training, training => training.wod, { cascade: true })
   trainings: Training[];
 
   @ApiResponseProperty({ type: [Exercise] })
