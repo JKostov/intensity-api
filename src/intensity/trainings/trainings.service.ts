@@ -6,6 +6,8 @@ import { AbstractService } from '@intensity/types/abstract.service';
 import { Token } from '@shared/token/token.interface';
 import { SignInOutDto } from '@intensity/trainings/dto/sign-in-out.dto';
 import { UsersService } from '@intensity/users/users.service';
+import { Wod } from '@intensity/wods/wod.entity';
+import { Exercise } from '@intensity/exercises/exercise.entity';
 
 @Injectable()
 export class TrainingsService extends AbstractService<Training> {
@@ -15,7 +17,13 @@ export class TrainingsService extends AbstractService<Training> {
 
   async getByDate(date: string): Promise<Training> {
 
-    const training = await this.repository.findOne({ where: { date }, relations: ['wod', 'wod.exercises'] });
+    const training = await this.repository.createQueryBuilder('t')
+      .select(['t', 'u.id', 'u.name', 'u.lastName'])
+      .where('t.date = :date', { date })
+      .leftJoinAndSelect('t.wod', 'w', 't.wod = w.id')
+      .leftJoinAndSelect('w.exercises', 'e', 'e.wod = w.id')
+      .leftJoin('t.users', 'u')
+      .getOne();
 
     if (!training) {
       throw new NotFoundException('Training does not exist.');

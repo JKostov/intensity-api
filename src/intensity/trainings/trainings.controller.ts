@@ -13,7 +13,6 @@ export class TrainingsController {
   constructor(private readonly trainingsService: TrainingsService) {
   }
 
-  @ApiBearerAuth()
   @ApiImplicitQuery({ name: 'date', type: 'string' })
   @ApiOkResponse({ description: 'Gets training by date', type: Training })
   @Get('')
